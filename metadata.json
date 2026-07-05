@@ -1,0 +1,8 @@
+{
+  "name": "Zafafi Digital Invitations",
+  "description": "منصة ذكية لإنشاء دعوات زفاف ومواليد رقمية تفاعلية مع تتبع الحضور والموقع ومولد ذكاء اصطناعي",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
