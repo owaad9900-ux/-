@@ -24,7 +24,7 @@ const firebaseConfig = JSON.parse(
   fs.readFileSync(path.join(process.cwd(), "firebase-applet-config.json"), "utf8")
 );
 const firebaseApp = initializeApp(firebaseConfig);
-const db = getFirestore(firebaseApp);
+const db = getFirestore(firebaseApp, firebaseConfig.firestoreDatabaseId);
 
 async function startServer() {
   const app = express();
@@ -99,29 +99,43 @@ async function startServer() {
         You are an elite expert in designing luxury, modern, and interactive digital invitations for weddings (زفاف) and newborn events (مولود/مواليد) in Arabic.
         Generate a highly professional, beautiful digital invitation design config and poetic/elegant invitation text based on:
         - Event Type: ${type} (wedding or newborn)
-        - Design Style: ${style || "modern"} (modern, traditional, royal, minimalist, floral)
+        - Design Style: ${style || "modern"} (supported styles: modern, traditional, royal, minimalist, floral, or Disney's Lilo & Stitch themed styles: 'stitch-ohana', 'stitch-angel-romance', 'stitch-baby-shower', 'stitch-cosmic-night')
         - Host/Guest Names: ${names}
         - Event Date: ${date || "not specified"}
         - Location details: ${location || "not specified"}
         - Tone: ${tone || "poetic and warm"} (poetic, formal, simple, cheerful)
         - Additional info: ${extraInfo || "none"}
 
+        SPECIAL DESIGN RULES FOR LILO & STITCH (ستيتش) STYLES:
+        If style is stitch-themed (contains "stitch" or "ستيتش") or the user requests Stitch, design a delightful, playful Disney Lilo & Stitch tropical or cosmic space themed invitation card in Arabic:
+        1. The text should have cute references to Lilo, Stitch, Angel, or the Ohana family concept (e.g. "أوهانا تعني العائلة، والعائلة تعني ألا يُترك أحد أو يُنسى 💙").
+        2. Set colors beautifully:
+           - for 'stitch-ohana': background="#0c2240" (deep navy), primary="#00a2ff" (stitch blue), secondary="#ff4b91" (hibiscus pink), text="#f0fdf4" (minty white), accent="#ffd700" (pineapple gold).
+           - for 'stitch-angel-romance': background="#fff1f2" (rose pastel), primary="#ec4899" (angel deep pink), secondary="#3b82f6" (stitch sky blue), text="#312e81" (dark indigo), accent="#facc15" (star gold).
+           - for 'stitch-baby-shower': background="#f0f9ff" (pale water blue), primary="#0ea5e9" (sky blue), secondary="#f472b6" (bubblegum pink), text="#0369a1" (ocean blue), accent="#fef08a" (lemon yellow).
+           - for 'stitch-cosmic-night': background="#020617" (cosmic dark), primary="#38bdf8" (electric cyan), secondary="#a21caf" (starry magenta), text="#f8fafc" (starlight white), accent="#38bdf8" (galaxy glow).
+        3. Set particlesEffect to either 'stitch-bubbles', 'tropical-leaves', or 'baby-stars'.
+        4. Set splashStyle to either 'stitch-ears', 'stitch-cute', or 'ohana-gate'.
+
         Your response must be a valid JSON object only. Do not wrap in markdown quotes. The JSON must have exactly the following structure:
         {
-          "title": "A short elegant main title for the card (e.g. 'دعوة زفاف مريم وأحمد' or 'مرحباً بطفلنا الصغير')",
-          "openingQuote": "A beautiful, deeply emotional opening quote or Quranic verse/poem fitting the event",
+          "title": "A short elegant main title for the card in Arabic (e.g. 'دعوة زفاف مريم وأحمد' or 'مرحباً بطفلنا الصغير' or 'دعوة ميلاد ستيتش الاستوائية المبهجة')",
+          "openingQuote": "A beautiful, deeply emotional opening quote or Quranic verse/poem/Ohana quote fitting the event",
           "bodyText": "The full body of the invitation card, written in highly professional, luxurious Arabic. It must contain the names, date, and location beautifully written.",
           "closingQuote": "A warm closing greeting (e.g., 'حضوركم يكتمل به فرحنا')",
           "colors": {
-            "background": "Hex color code fitting the selected style (e.g. dark rich green, cream royal, pastel blue, golden beige)",
+            "background": "Hex color code fitting the selected style",
             "primary": "Hex color code for primary buttons/accents",
             "secondary": "Hex color code for secondary elements",
             "text": "Hex color code for readability against the background",
             "accent": "Hex color code for beautiful highlight/glow effects"
           },
-          "fontStyle": "One of: 'serif' (for traditional/royal), 'sans-serif' (for clean modern), 'cursive' (for artistic), 'mono' (for experimental/minimalist)",
+          "fontStyle": "One of: 'serif' (for traditional/royal), 'sans-serif' (for clean modern), 'cursive' (for artistic/cute), 'mono' (for experimental/minimalist/cosmic)",
           "musicTheme": "Suggested background music style: 'royal-instrumental' or 'soft-piano' or 'traditional-arabic' or 'sweet-lullaby' or 'ambient-nature'",
-          "particlesEffect": "Suggested decorative background particles: 'gold-dust' or 'rose-petals' or 'baby-stars' or 'none'"
+          "particlesEffect": "Suggested decorative background particles: 'gold-dust' or 'rose-petals' or 'baby-stars' or 'stitch-bubbles' or 'tropical-leaves' or 'none'",
+          "splashStyle": "Suggested welcome screen design: 'envelope' or 'wax-seal' or 'royal-curtain' or 'glowing-star' or 'matte-glass' or 'classical-gate' or 'floral-vignette' or 'bohemian-arch' or 'vintage-lace' or 'starry-night' or 'stitch-ears' or 'stitch-cute' or 'ohana-gate'",
+          "splashWelcomeText": "A warm welcome greeting displayed on the starting gate screen (e.g. 'أوهانا ترحب بكم في عالم ستيتش الأزرق! 💙')",
+          "splashButtonText": "Label for the open card button (e.g. 'افتح ظرف ستيتش اللطيف ✉️' or 'افتح دعوة ستيتش وأنجل الوردي 🌸')"
         }
       `;
 
@@ -142,23 +156,42 @@ async function startServer() {
     } catch (error: any) {
       console.error("AI Generation Error:", error);
       // Return a beautiful fallback if there's an issue with API key or other things
+      const isStitch = String(req.body.style).includes("stitch") || String(req.body.names).includes("ستيتش") || String(req.body.extraInfo).includes("ستيتش");
+      
       return res.status(200).json({
         isFallback: true,
         apiError: error.message || String(error),
-        title: req.body.type === "wedding" ? "دعوة زفاف مميزة" : "دعوة استقبال مولود جديد",
-        openingQuote: req.body.type === "wedding" ? "وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَاجًا لِّتَسْكُنُوا إِلَيْهَا" : "الْمالُ وَالْبَنُونَ زِينَةُ الْحَياةِ الدُّنْيا",
-        bodyText: `بكل الحب والتقدير، ندعوكم لمشاركتنا فرحتنا الكبرى بمناسبة ${req.body.type === "wedding" ? "حفل زفاف" : "استقبال مولودنا"} الغالي: ${req.body.names}، وذلك بمشيئة الله يوم ${req.body.date || "المحدد"} في ${req.body.location || "القاعة الكبرى"}. حضوركم تكتمل به فرحتنا ويزيدنا سروراً وعزاً.`,
+        title: isStitch 
+          ? "دعوة ميلاد ستيتش الاستوائية المبهجة (ثيم أوهانا) 🌺" 
+          : req.body.type === "wedding" ? "دعوة زفاف مميزة" : "دعوة استقبال مولود جديد",
+        openingQuote: isStitch
+          ? "«أوهانا تعني العائلة، والعائلة تعني ألا يُترك أحد أو يُنسى» 💙"
+          : req.body.type === "wedding" ? "وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَاجًا لِّتَسْكُنُوا إِلَيْهَا" : "الْمالُ وَالْبَنُونَ زِينَةُ الْحَياةِ الدُّنْيا",
+        bodyText: isStitch
+          ? `يسعدنا جداً دعوتكم لحضور حفلة استقبال وعيد ميلاد ابننا الغالي (${req.body.names || "يوسف"}) المليئة بالبهجة والمرح الاستوائي بطابع وحش ديزني اللطيف ستيتش! حضوركم سيزيدنا فرحاً وسعادة لا تُنسى في هذه الليلة الاستثنائية.`
+          : `بكل الحب والتقدير، ندعوكم لمشاركتنا فرحتنا الكبرى بمناسبة ${req.body.type === "wedding" ? "حفل زفاف" : "استقبال مولودنا"} الغالي: ${req.body.names}، وذلك بمشيئة الله يوم ${req.body.date || "المحدد"} في ${req.body.location || "القاعة الكبرى"}. حضوركم تكتمل به فرحتنا ويزيدنا سروراً وعزاً.`,
         closingQuote: "ودامت دياركم مكللة بالأفراح والمسرات",
-        colors: {
-          background: req.body.style === "royal" ? "#1a2a1d" : "#fbf8f3",
-          primary: "#c5a880",
-          secondary: "#2c4a3e",
-          text: req.body.style === "royal" ? "#fbf8f3" : "#2c4a3e",
-          accent: "#d4af37"
-        },
-        fontStyle: "serif",
-        musicTheme: req.body.type === "wedding" ? "royal-instrumental" : "sweet-lullaby",
-        particlesEffect: req.body.type === "wedding" ? "gold-dust" : "baby-stars"
+        colors: isStitch 
+          ? {
+              background: "#0c2240",
+              primary: "#00a2ff",
+              secondary: "#ff4b91",
+              text: "#f0fdf4",
+              accent: "#ffd700"
+            }
+          : {
+              background: req.body.style === "royal" ? "#1a2a1d" : "#fbf8f3",
+              primary: "#c5a880",
+              secondary: "#2c4a3e",
+              text: req.body.style === "royal" ? "#fbf8f3" : "#2c4a3e",
+              accent: "#d4af37"
+            },
+        fontStyle: isStitch ? "cursive" : "serif",
+        musicTheme: isStitch ? "sweet-lullaby" : req.body.type === "wedding" ? "royal-instrumental" : "sweet-lullaby",
+        particlesEffect: isStitch ? "stitch-bubbles" : req.body.type === "wedding" ? "gold-dust" : "baby-stars",
+        splashStyle: isStitch ? "stitch-ears" : req.body.type === "wedding" ? "envelope" : "glowing-star",
+        splashWelcomeText: isStitch ? "أوهانا ترحب بكم في عالم ستيتش الأزرق! 💙" : "مرحباً بكم في حفلنا البهيج ✨",
+        splashButtonText: isStitch ? "افتح ظرف ستيتش اللطيف ✉️" : "افتح كارت الدعوة اللطيف ✉️"
       });
     }
   });
@@ -404,15 +437,12 @@ async function startServer() {
     }
   });
 
-  // API: Telegram Webhook handler
-  app.post("/api/telegram-webhook", async (req, res) => {
+  // Shared Telegram Message Processor
+  async function processTelegramUpdate(update: any) {
     const token = "8789851822:AAEzFmOUrP2Ap35Ztey6TNQZ2NYb-W3ULSE";
     try {
-      const update = req.body;
-      console.log("Incoming Telegram Update:", JSON.stringify(update));
-
       if (!update || !update.message) {
-        return res.status(200).send("OK");
+        return;
       }
 
       const chatId = update.message.chat.id;
@@ -447,7 +477,7 @@ async function startServer() {
           `📊 لعرض إحصائيات التفعيلات والأكواد في قاعدة البيانات:\n` +
           `/status`;
         await sendTelegramMessage(welcomeMessage);
-      } else if (lowerText.startsWith("/generate_pro")) {
+      } else if (lowerText.startsWith("/generate_pro") || lowerText.startsWith("/generatepro")) {
         const codeChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         let randomPart = "";
         for (let i = 0; i < 9; i++) {
@@ -470,7 +500,7 @@ async function startServer() {
           `الكود: \`${fullCode}\`\n\n` +
           `_(اضغط على الكود لنسخه مباشرة في التطبيق ومشاركته مع العميل)_`;
         await sendTelegramMessage(replyMsg);
-      } else if (lowerText.startsWith("/generate_royal")) {
+      } else if (lowerText.startsWith("/generate_royal") || lowerText.startsWith("/generateroyal")) {
         const codeChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         let randomPart = "";
         for (let i = 0; i < 9; i++) {
@@ -521,10 +551,66 @@ async function startServer() {
       }
 
     } catch (err: any) {
-      console.error("Webhook Error Handling Message:", err);
+      const errorMsg = `[${new Date().toISOString()}] Error in processTelegramUpdate: ${err.stack || err.message || err}\n`;
+      console.error(errorMsg);
+      fs.appendFileSync(path.join(process.cwd(), "bot-debug.log"), errorMsg);
+    }
+  }
+
+  // API: Telegram Webhook handler
+  app.post("/api/telegram-webhook", async (req, res) => {
+    try {
+      const update = req.body;
+      console.log("Incoming Telegram Update via Webhook:", JSON.stringify(update));
+      fs.appendFileSync(path.join(process.cwd(), "bot-debug.log"), `[${new Date().toISOString()}] Incoming webhook update: ${JSON.stringify(update)}\n`);
+      await processTelegramUpdate(update);
+    } catch (err: any) {
+      console.error("Webhook Route Error:", err);
+      fs.appendFileSync(path.join(process.cwd(), "bot-debug.log"), `[${new Date().toISOString()}] Webhook route error: ${err.message}\n`);
     }
     return res.status(200).send("OK");
   });
+
+  // Background Long Polling Loop for the bot
+  async function startTelegramPolling() {
+    const token = "8789851822:AAEzFmOUrP2Ap35Ztey6TNQZ2NYb-W3ULSE";
+    console.log("Telegram Polling: Deleting webhook to switch to polling...");
+    fs.appendFileSync(path.join(process.cwd(), "bot-debug.log"), `[${new Date().toISOString()}] Telegram Polling: Starting bot polling...\n`);
+    try {
+      await fetch(`https://api.telegram.org/bot${token}/deleteWebhook`);
+    } catch (err: any) {
+      console.error("Error deleting webhook:", err);
+      fs.appendFileSync(path.join(process.cwd(), "bot-debug.log"), `[${new Date().toISOString()}] Error deleting webhook: ${err.message}\n`);
+    }
+
+    let offset = 0;
+    console.log("Telegram Polling: Bot Polling loop started!");
+    
+    while (true) {
+      try {
+        const response = await fetch(`https://api.telegram.org/bot${token}/getUpdates?offset=${offset}&timeout=30`);
+        if (!response.ok) {
+          throw new Error(`Telegram API returned status ${response.status}`);
+        }
+        const data: any = await response.json();
+        if (data.ok && data.result && data.result.length > 0) {
+          for (const update of data.result) {
+            fs.appendFileSync(path.join(process.cwd(), "bot-debug.log"), `[${new Date().toISOString()}] Polled update: ${JSON.stringify(update)}\n`);
+            await processTelegramUpdate(update);
+            offset = update.update_id + 1;
+          }
+        }
+      } catch (err: any) {
+        console.error("Error in Telegram Polling loop:", err.message || err);
+        fs.appendFileSync(path.join(process.cwd(), "bot-debug.log"), `[${new Date().toISOString()}] Polling loop error: ${err.message || err}\n`);
+        await new Promise((resolve) => setTimeout(resolve, 5000));
+      }
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
+  }
+
+  // Run Long Polling in the background (will function in both dev & shared environments)
+  startTelegramPolling().catch((err) => console.error("Long Polling Crash:", err));
 
 
   // Serve static assets in production, mount Vite in dev

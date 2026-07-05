@@ -2,8 +2,12 @@ import React, { useState, useEffect, useRef } from "react";
 import { MessageCircle, X, Send, User, HeadsetIcon, ShieldAlert } from "lucide-react";
 import { SupportMessage } from "../types";
 
-export default function SupportChat() {
-  const [isOpen, setIsOpen] = useState(false);
+interface SupportChatProps {
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
+}
+
+export default function SupportChat({ isOpen, setIsOpen }: SupportChatProps) {
   const [messages, setMessages] = useState<SupportMessage[]>([
     {
       id: "msg_init",
@@ -70,24 +74,12 @@ export default function SupportChat() {
     }, 1200);
   };
 
-  return (
-    <div className="fixed bottom-6 right-6 z-40 font-sans">
-      
-      {/* Floating Messenger Button */}
-      {!isOpen && (
-        <button
-          onClick={() => setIsOpen(true)}
-          className="p-4 bg-amber-500 text-white rounded-full shadow-2xl hover:bg-amber-600 hover:scale-105 active:scale-95 transition-all flex items-center gap-2 cursor-pointer border border-white/20"
-          id="live-chat-toggle"
-        >
-          <span className="text-xs font-bold hidden sm:inline-block pl-1">الدعم المباشر</span>
-          <MessageCircle className="h-6 w-6" />
-        </button>
-      )}
+  if (!isOpen) return null;
 
+  return (
+    <div className="fixed bottom-6 right-6 z-50 font-sans">
       {/* Chat Window Panel */}
-      {isOpen && (
-        <div className="bg-white rounded-2xl shadow-2xl border border-gray-100 w-80 sm:w-96 overflow-hidden flex flex-col h-[450px] transition-all text-right">
+      <div className="bg-white rounded-2xl shadow-2xl border border-gray-100 w-80 sm:w-96 overflow-hidden flex flex-col h-[450px] transition-all text-right">
           
           {/* Header */}
           <div className="bg-gradient-to-l from-amber-500 to-amber-600 p-4 text-white flex justify-between items-center">
@@ -179,8 +171,7 @@ export default function SupportChat() {
           </form>
 
         </div>
-      )}
 
-    </div>
+      </div>
   );
 }

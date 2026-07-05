@@ -23,10 +23,14 @@ export interface Invitation {
   musicTheme: string;
   musicUrl?: string; // URL of the audio file
   videoUrl?: string; // YouTube or generic video embed URL
-  particlesEffect: "gold-dust" | "rose-petals" | "baby-stars" | "none";
+  particlesEffect: "gold-dust" | "rose-petals" | "baby-stars" | "stitch-bubbles" | "tropical-leaves" | "none";
   createdAt: string;
   status: "active" | "draft";
   viewsCount?: number;
+  animationType?: "zoom-in" | "slide-up" | "fade-in" | "rotate-fade" | "bounce" | "elastic-pop" | "flip-x" | "slide-left" | "slide-right" | "glow-grow";
+  splashStyle?: string;
+  splashWelcomeText?: string;
+  splashButtonText?: string;
 }
 
 export interface RSVP {

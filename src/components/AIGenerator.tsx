@@ -78,18 +78,21 @@ export default function AIGenerator({ onGenerationComplete, isLoading, setIsLoad
       fontStyle: generatedPreview.fontStyle || "serif",
       musicTheme: generatedPreview.musicTheme || "royal-instrumental",
       particlesEffect: generatedPreview.particlesEffect || "gold-dust",
+      splashStyle: generatedPreview.splashStyle || (type === "wedding" ? "envelope" : "glowing-star"),
+      splashWelcomeText: generatedPreview.splashWelcomeText || "مرحباً بكم في حفلنا البهيج ✨",
+      splashButtonText: generatedPreview.splashButtonText || "افتح كارت الدعوة اللطيف ✉️",
       status: "active",
     });
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-[#EAE2D5] p-6 md:p-8 shadow-sm text-right">
+    <div className="bg-white rounded-2xl border border-[#e6b0aa]/40 p-6 md:p-8 shadow-sm text-right">
       <div className="flex items-center gap-3 justify-end mb-6">
         <div>
-          <h2 className="text-xl md:text-2xl font-serif font-bold text-[#1A1A1A]">مصمم الدعوات الذكي (AI)</h2>
+          <h2 className="text-xl md:text-2xl font-serif font-bold text-[#4a3e3d]">مصمم الدعوات الذكي (AI)</h2>
           <p className="text-xs text-[#888] font-serif italic">قم بإنشاء نصوص وتصاميم دعوات عصرية متكاملة بضغطة زر واحدة</p>
         </div>
-        <div className="p-3 bg-[#F9F7F5] text-[#C5A059] border border-[#EAE2D5] rounded-xl shadow-sm">
+        <div className="p-3 bg-[#f5eae6] text-[#c88b8b] border border-[#e6b0aa]/40 rounded-xl shadow-sm">
           <Sparkles className="h-6 w-6" />
         </div>
       </div>
@@ -98,15 +101,15 @@ export default function AIGenerator({ onGenerationComplete, isLoading, setIsLoad
         <form onSubmit={handleGenerate} className="space-y-6">
           {/* Step 1: Event Type */}
           <div>
-            <label className="block text-xs font-serif font-bold text-[#666] mb-2 uppercase tracking-wide">نوع المناسبة السعيدة</label>
+            <label className="block text-xs font-serif font-bold text-[#3a2a29]/80 mb-2 uppercase tracking-wide">نوع المناسبة السعيدة</label>
             <div className="grid grid-cols-2 gap-4">
               <button
                 type="button"
                 onClick={() => setType("wedding")}
                 className={`py-4 rounded-lg border font-bold text-base transition-all flex flex-col items-center justify-center gap-2 cursor-pointer ${
                   type === "wedding"
-                    ? "border-[#C5A059] bg-[#F9F7F5] text-[#C5A059]"
-                    : "border-[#EAE2D5] hover:border-[#C5A059] text-[#666]"
+                    ? "border-[#c88b8b] bg-[#f5eae6] text-[#c88b8b]"
+                    : "border-[#e6b0aa]/40 hover:border-[#c88b8b] text-[#3a2a29]/70"
                 }`}
               >
                 <span className="text-2xl">💍</span>
@@ -118,8 +121,8 @@ export default function AIGenerator({ onGenerationComplete, isLoading, setIsLoad
                 onClick={() => setType("baby")}
                 className={`py-4 rounded-lg border font-bold text-base transition-all flex flex-col items-center justify-center gap-2 cursor-pointer ${
                   type === "baby"
-                    ? "border-[#C5A059] bg-[#F9F7F5] text-[#C5A059]"
-                    : "border-[#EAE2D5] hover:border-[#C5A059] text-[#666]"
+                    ? "border-[#c88b8b] bg-[#f5eae6] text-[#c88b8b]"
+                    : "border-[#e6b0aa]/40 hover:border-[#c88b8b] text-[#3a2a29]/70"
                 }`}
               >
                 <span className="text-2xl">👶</span>
@@ -130,7 +133,7 @@ export default function AIGenerator({ onGenerationComplete, isLoading, setIsLoad
 
           {/* Names Input */}
           <div>
-            <label className="block text-xs font-serif font-bold text-[#666] mb-1.5 uppercase tracking-wide">
+            <label className="block text-xs font-serif font-bold text-[#3a2a29]/80 mb-1.5 uppercase tracking-wide">
               {type === "wedding" ? "أسماء العرسان الكرام" : "اسم المولود السعيد (أو الكنية)"}
             </label>
             <input
@@ -139,20 +142,24 @@ export default function AIGenerator({ onGenerationComplete, isLoading, setIsLoad
               value={names}
               onChange={(e) => setNames(e.target.value)}
               placeholder={type === "wedding" ? "مثال: عبد الرحمن ومريم" : "مثال: الأميرة تالا أو فهد"}
-              className="w-full px-4 py-3 rounded-lg border border-[#EAE2D5] bg-[#F9F7F5] text-sm focus:outline-none focus:ring-1 focus:ring-[#C5A059] focus:border-[#C5A059] text-[#2D2D2D] text-right"
+              className="w-full px-4 py-3 rounded-lg border border-[#e6b0aa]/40 bg-[#f5eae6] text-sm focus:outline-none focus:ring-1 focus:ring-[#c88b8b] focus:border-[#c88b8b] text-[#3a2a29] text-right"
             />
           </div>
 
           {/* Styles Selection */}
           <div>
-            <label className="block text-xs font-serif font-bold text-[#666] mb-2 uppercase tracking-wide">نمط التصميم المفضل</label>
-            <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+            <label className="block text-xs font-serif font-bold text-[#3a2a29]/80 mb-2 uppercase tracking-wide">نمط التصميم المفضل</label>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2">
               {[
                 { id: "royal", label: "ملكي فاخر", icon: "👑" },
                 { id: "modern", label: "عصري حديث", icon: "✨" },
                 { id: "floral", label: "زهور ناعمة", icon: "🌸" },
                 { id: "minimalist", label: "بسيط مريح", icon: "🍃" },
                 { id: "traditional", label: "أصيل تقليدي", icon: "🕌" },
+                { id: "stitch-ohana", label: "ستيتش أوهانا 🌺", icon: "🏝️" },
+                { id: "stitch-angel-romance", label: "ستيتش وأنجل 💖", icon: "👼" },
+                { id: "stitch-baby-shower", label: "بيبي ستيتش 🍼", icon: "👶" },
+                { id: "stitch-cosmic-night", label: "ستيتش الفضائي 🌌", icon: "🛸" },
               ].map((styleOpt) => (
                 <button
                   key={styleOpt.id}
@@ -160,8 +167,8 @@ export default function AIGenerator({ onGenerationComplete, isLoading, setIsLoad
                   onClick={() => setStyle(styleOpt.id)}
                   className={`py-2 px-1 rounded-lg border font-medium text-[11px] transition-all flex flex-col items-center gap-1 cursor-pointer ${
                     style === styleOpt.id
-                      ? "border-[#C5A059] bg-[#F9F7F5] text-[#C5A059] font-bold"
-                      : "border-[#EAE2D5] hover:border-[#C5A059] text-[#666]"
+                      ? "border-[#c88b8b] bg-[#f5eae6] text-[#c88b8b] font-bold"
+                      : "border-[#e6b0aa]/40 hover:border-[#c88b8b] text-[#3a2a29]/70"
                   }`}
                 >
                   <span className="text-base">{styleOpt.icon}</span>
@@ -174,33 +181,33 @@ export default function AIGenerator({ onGenerationComplete, isLoading, setIsLoad
           {/* Date, Time and Location */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <label className="block text-xs font-serif font-bold text-[#666] mb-1.5 uppercase tracking-wide">التاريخ</label>
+              <label className="block text-xs font-serif font-bold text-[#3a2a29]/80 mb-1.5 uppercase tracking-wide">التاريخ</label>
               <input
                 type="date"
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
-                className="w-full px-4 py-3 rounded-lg border border-[#EAE2D5] bg-[#F9F7F5] text-sm focus:outline-none focus:ring-1 focus:ring-[#C5A059] focus:border-[#C5A059] text-[#2D2D2D] text-right"
+                className="w-full px-4 py-3 rounded-lg border border-[#e6b0aa]/40 bg-[#f5eae6] text-sm focus:outline-none focus:ring-1 focus:ring-[#c88b8b] focus:border-[#c88b8b] text-[#3a2a29] text-right"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-serif font-bold text-[#666] mb-1.5 uppercase tracking-wide">التوقيت</label>
+              <label className="block text-xs font-serif font-bold text-[#3a2a29]/80 mb-1.5 uppercase tracking-wide">التوقيت</label>
               <input
                 type="time"
                 value={time}
                 onChange={(e) => setTime(e.target.value)}
-                className="w-full px-4 py-3 rounded-lg border border-[#EAE2D5] bg-[#F9F7F5] text-sm focus:outline-none focus:ring-1 focus:ring-[#C5A059] focus:border-[#C5A059] text-[#2D2D2D] text-right"
+                className="w-full px-4 py-3 rounded-lg border border-[#e6b0aa]/40 bg-[#f5eae6] text-sm focus:outline-none focus:ring-1 focus:ring-[#c88b8b] focus:border-[#c88b8b] text-[#3a2a29] text-right"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-serif font-bold text-[#666] mb-1.5 uppercase tracking-wide">قاعة الاحتفال</label>
+              <label className="block text-xs font-serif font-bold text-[#3a2a29]/80 mb-1.5 uppercase tracking-wide">قاعة الاحتفال</label>
               <input
                 type="text"
                 value={locationName}
                 onChange={(e) => setLocationName(e.target.value)}
                 placeholder="قاعة ليلتي أو فندق هيلتون"
-                className="w-full px-4 py-3 rounded-lg border border-[#EAE2D5] bg-[#F9F7F5] text-sm focus:outline-none focus:ring-1 focus:ring-[#C5A059] focus:border-[#C5A059] text-[#2D2D2D] text-right"
+                className="w-full px-4 py-3 rounded-lg border border-[#e6b0aa]/40 bg-[#f5eae6] text-sm focus:outline-none focus:ring-1 focus:ring-[#c88b8b] focus:border-[#c88b8b] text-[#3a2a29] text-right"
               />
             </div>
           </div>
@@ -208,11 +215,11 @@ export default function AIGenerator({ onGenerationComplete, isLoading, setIsLoad
           {/* Tone & Additional info */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-serif font-bold text-[#666] mb-2 uppercase tracking-wide">لهجة النص ونبرته</label>
+              <label className="block text-xs font-serif font-bold text-[#3a2a29]/80 mb-2 uppercase tracking-wide">لهجة النص ونبرته</label>
               <select
                 value={tone}
                 onChange={(e) => setTone(e.target.value)}
-                className="w-full px-4 py-3 rounded-lg border border-[#EAE2D5] bg-[#F9F7F5] text-sm focus:outline-none focus:ring-1 focus:ring-[#C5A059] focus:border-[#C5A059] text-[#2D2D2D] text-right"
+                className="w-full px-4 py-3 rounded-lg border border-[#e6b0aa]/40 bg-[#f5eae6] text-sm focus:outline-none focus:ring-1 focus:ring-[#c88b8b] focus:border-[#c88b8b] text-[#3a2a29] text-right"
               >
                 <option value="poetic">شعري وأدبي فاخر</option>
                 <option value="formal">رسمي ووقور</option>
@@ -222,13 +229,13 @@ export default function AIGenerator({ onGenerationComplete, isLoading, setIsLoad
             </div>
 
             <div>
-              <label className="block text-xs font-serif font-bold text-[#666] mb-2 uppercase tracking-wide">ملاحظات إضافية</label>
+              <label className="block text-xs font-serif font-bold text-[#3a2a29]/80 mb-2 uppercase tracking-wide">ملاحظات إضافية</label>
               <input
                 type="text"
                 value={extraInfo}
                 onChange={(e) => setExtraInfo(e.target.value)}
                 placeholder="مثال: يرجى كتابة بيت شعر ترحيبي"
-                className="w-full px-4 py-3 rounded-lg border border-[#EAE2D5] bg-[#F9F7F5] text-sm focus:outline-none focus:ring-1 focus:ring-[#C5A059] focus:border-[#C5A059] text-[#2D2D2D] text-right"
+                className="w-full px-4 py-3 rounded-lg border border-[#e6b0aa]/40 bg-[#f5eae6] text-sm focus:outline-none focus:ring-1 focus:ring-[#c88b8b] focus:border-[#c88b8b] text-[#3a2a29] text-right"
               />
             </div>
           </div>
@@ -237,7 +244,7 @@ export default function AIGenerator({ onGenerationComplete, isLoading, setIsLoad
           <button
             type="submit"
             disabled={isLoading || !names}
-            className="w-full py-4 rounded-lg bg-[#1A1A1A] hover:bg-[#C5A059] text-white font-serif font-bold text-base shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full py-4 rounded-lg bg-[#4a3e3d] hover:bg-[#c88b8b] text-white font-serif font-bold text-base shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isLoading ? (
               <>
@@ -266,57 +273,76 @@ export default function AIGenerator({ onGenerationComplete, isLoading, setIsLoad
               </p>
             </div>
           ) : (
-            <div className="p-5 rounded-xl bg-[#F9F7F5] border border-[#EAE2D5] shadow-sm">
-              <h3 className="font-serif font-bold text-[#C5A059] mb-2 flex items-center justify-end gap-1.5 text-base">
+            <div className="p-5 rounded-xl bg-[#f5eae6] border border-[#e6b0aa]/40 shadow-sm">
+              <h3 className="font-serif font-bold text-[#c88b8b] mb-2 flex items-center justify-end gap-1.5 text-base">
                 <span>تم التوليد بالذكاء الاصطناعي بنجاح!</span>
-                <Check className="h-5 w-5 text-[#C5A059]" />
+                <Check className="h-5 w-5 text-[#c88b8b]" />
               </h3>
-              <p className="text-xs text-[#666] font-serif leading-relaxed">
+              <p className="text-xs text-[#3a2a29]/80 font-serif leading-relaxed">
                 قام الذكاء الاصطناعي بصياغة بطاقة دعوة متكاملة وحصرية، واقترح لوحة ألوان تناسب النمط المختار. يمكنك الآن استعراضها واعتمادها مباشرة في القالب للتعديل اليدوي اللاحق.
               </p>
             </div>
           )}
 
-          <div className="border border-[#EAE2D5] rounded-xl p-5 bg-[#F9F7F5] space-y-4">
+          <div className="border border-[#e6b0aa]/40 rounded-xl p-5 bg-[#f5eae6] space-y-4">
             <div>
-              <span className="text-[10px] font-serif font-bold text-[#888] block mb-1">العنوان المقترح</span>
-              <p className="text-sm font-serif font-bold text-[#1A1A1A] bg-white border border-[#EAE2D5] p-3 rounded-lg">{generatedPreview.title}</p>
+              <span className="text-[10px] font-serif font-bold text-[#3a2a29]/60 block mb-1">العنوان المقترح</span>
+              <p className="text-sm font-serif font-bold text-[#4a3e3d] bg-white border border-[#e6b0aa]/30 p-3 rounded-lg">{generatedPreview.title}</p>
             </div>
 
             <div>
-              <span className="text-[10px] font-serif font-bold text-[#888] block mb-1">الافتتاحية والأبيات الشعرية</span>
-              <p className="text-xs font-serif italic text-[#2D2D2D] bg-white border border-[#EAE2D5] p-3 rounded-lg leading-relaxed">{generatedPreview.openingQuote}</p>
+              <span className="text-[10px] font-serif font-bold text-[#3a2a29]/60 block mb-1">الافتتاحية والأبيات الشعرية</span>
+              <p className="text-xs font-serif italic text-[#3a2a29] bg-white border border-[#e6b0aa]/30 p-3 rounded-lg leading-relaxed">{generatedPreview.openingQuote}</p>
             </div>
 
             <div>
-              <span className="text-[10px] font-serif font-bold text-[#888] block mb-1">محتوى الدعوة الرئيسي</span>
-              <p className="text-xs text-[#2D2D2D] bg-white border border-[#EAE2D5] p-3 rounded-lg leading-relaxed whitespace-pre-wrap">{generatedPreview.bodyText}</p>
+              <span className="text-[10px] font-serif font-bold text-[#3a2a29]/60 block mb-1">محتوى الدعوة الرئيسي</span>
+              <p className="text-xs text-[#3a2a29] bg-white border border-[#e6b0aa]/30 p-3 rounded-lg leading-relaxed whitespace-pre-wrap">{generatedPreview.bodyText}</p>
             </div>
+
+            {generatedPreview.splashStyle && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-white p-3 border border-[#e6b0aa]/30 rounded-lg text-right">
+                <div>
+                  <span className="text-[10px] font-serif font-bold text-[#3a2a29]/60 block mb-1">رسالة ترحيب البوابة</span>
+                  <p className="text-xs text-[#3a2a29] font-serif font-semibold">{generatedPreview.splashWelcomeText}</p>
+                </div>
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div>
+                    <span className="text-[10px] font-serif font-bold text-[#3a2a29]/60 block mb-1">تصميم البوابة</span>
+                    <span className="px-2 py-1 bg-[#f5eae6] border border-[#e6b0aa]/40 rounded text-[10px] font-semibold text-[#c88b8b] block text-center truncate">{generatedPreview.splashStyle}</span>
+                  </div>
+                  <div>
+                    <span className="text-[10px] font-serif font-bold text-[#3a2a29]/60 block mb-1">زر فتح الظرف</span>
+                    <span className="px-2 py-1 bg-[#f5eae6] border border-[#e6b0aa]/40 rounded text-[10px] font-semibold text-[#3a2a29] block text-center truncate">{generatedPreview.splashButtonText}</span>
+                  </div>
+                </div>
+              </div>
+            )}
 
             <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 pt-2">
               <div>
-                <span className="text-[10px] font-serif font-bold text-[#888] block text-center mb-1">الخلفية</span>
-                <div className="h-8 rounded-lg border border-[#EAE2D5] text-center text-[10px] flex items-center justify-center font-mono bg-white text-[#2D2D2D]" style={{ backgroundColor: generatedPreview.colors.background, color: generatedPreview.colors.text }}>
+                <span className="text-[10px] font-serif font-bold text-[#3a2a29]/60 block text-center mb-1">الخلفية</span>
+                <div className="h-8 rounded-lg border border-[#e6b0aa]/30 text-center text-[10px] flex items-center justify-center font-mono bg-white text-[#3a2a29]" style={{ backgroundColor: generatedPreview.colors.background, color: generatedPreview.colors.text }}>
                   {generatedPreview.colors.background}
                 </div>
               </div>
               <div>
-                <span className="text-[10px] font-serif font-bold text-[#888] block text-center mb-1">الأساسي</span>
-                <div className="h-8 rounded-lg border border-[#EAE2D5] text-center text-[10px] flex items-center justify-center font-mono text-white" style={{ backgroundColor: generatedPreview.colors.primary }}>
+                <span className="text-[10px] font-serif font-bold text-[#3a2a29]/60 block text-center mb-1">الأساسي</span>
+                <div className="h-8 rounded-lg border border-[#e6b0aa]/30 text-center text-[10px] flex items-center justify-center font-mono text-white" style={{ backgroundColor: generatedPreview.colors.primary }}>
                   {generatedPreview.colors.primary}
                 </div>
               </div>
               <div>
-                <span className="text-[10px] font-serif font-bold text-[#888] block text-center mb-1">الخط</span>
-                <p className="text-[11px] bg-white border border-[#EAE2D5] p-2 rounded-lg text-center font-semibold text-[#1A1A1A] truncate">{generatedPreview.fontStyle}</p>
+                <span className="text-[10px] font-serif font-bold text-[#3a2a29]/60 block text-center mb-1">الخط</span>
+                <p className="text-[11px] bg-white border border-[#e6b0aa]/30 p-2 rounded-lg text-center font-semibold text-[#4a3e3d] truncate">{generatedPreview.fontStyle}</p>
               </div>
               <div>
-                <span className="text-[10px] font-serif font-bold text-[#888] block text-center mb-1">الموسيقى</span>
-                <p className="text-[10px] bg-white border border-[#EAE2D5] p-2 rounded-lg text-center text-[#1A1A1A] truncate">{generatedPreview.musicTheme}</p>
+                <span className="text-[10px] font-serif font-bold text-[#3a2a29]/60 block text-center mb-1">الموسيقى</span>
+                <p className="text-[10px] bg-white border border-[#e6b0aa]/30 p-2 rounded-lg text-center text-[#4a3e3d] truncate">{generatedPreview.musicTheme}</p>
               </div>
               <div>
-                <span className="text-[10px] font-serif font-bold text-[#888] block text-center mb-1">التأثيرات</span>
-                <p className="text-[10px] bg-white border border-[#EAE2D5] p-2 rounded-lg text-center text-[#1A1A1A] truncate">{generatedPreview.particlesEffect}</p>
+                <span className="text-[10px] font-serif font-bold text-[#3a2a29]/60 block text-center mb-1">التأثيرات</span>
+                <p className="text-[10px] bg-white border border-[#e6b0aa]/30 p-2 rounded-lg text-center text-[#4a3e3d] truncate">{generatedPreview.particlesEffect}</p>
               </div>
             </div>
           </div>
@@ -324,14 +350,14 @@ export default function AIGenerator({ onGenerationComplete, isLoading, setIsLoad
           <div className="flex gap-3">
             <button
               onClick={handleAdoptDesign}
-              className="flex-1 py-3.5 rounded-lg bg-[#1A1A1A] hover:bg-[#C5A059] text-white font-serif font-bold text-sm shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+              className="flex-1 py-3.5 rounded-lg bg-[#4a3e3d] hover:bg-[#c88b8b] text-white font-serif font-bold text-sm shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer"
             >
               <span>اعتماد التصميم وبدء النشر 🎨</span>
             </button>
 
             <button
               onClick={() => setGeneratedPreview(null)}
-              className="px-5 py-3.5 rounded-lg border border-[#EAE2D5] hover:bg-[#F9F7F5] text-[#666] font-serif font-bold text-sm transition-all flex items-center gap-1 cursor-pointer"
+              className="px-5 py-3.5 rounded-lg border border-[#e6b0aa]/40 hover:bg-[#f5eae6] text-[#3a2a29]/70 font-serif font-bold text-sm transition-all flex items-center gap-1 cursor-pointer"
             >
               <ArrowRight className="h-4 w-4" />
               <span>إعادة المحاولة</span>
