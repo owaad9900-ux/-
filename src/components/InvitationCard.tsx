@@ -1349,7 +1349,7 @@ export default function InvitationCard({ invitation, onRsvpSubmit, previewMode =
 
               {/* Footer Credit */}
               <div className="mt-12 text-xs opacity-60 flex flex-col items-center gap-1">
-                <p>منصة زفافي لبطاقات الدعوة الرقمية الفاخرة © 2026</p>
+                <p>منصة دعوات لبطاقات الدعوة الرقمية الفاخرة © 2026</p>
                 <p className="text-[10px]">مصممة بأناقة وبأحدث تقنيات الذكاء الاصطناعي</p>
               </div>
 

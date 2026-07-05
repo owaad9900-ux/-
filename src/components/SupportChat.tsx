@@ -12,7 +12,7 @@ export default function SupportChat({ isOpen, setIsOpen }: SupportChatProps) {
     {
       id: "msg_init",
       sender: "support",
-      text: "أهلاً بك في الدعم الفني المباشر لمنصة زفافي! كيف يمكننا مساعدتك اليوم في تجهيز دعوتك الرقمية الفاخرة؟ 😊",
+      text: "أهلاً بك في الدعم الفني المباشر لمنصة دعوات! كيف يمكننا مساعدتك اليوم في تجهيز دعوتك الرقمية الفاخرة؟ 😊",
       timestamp: new Date().toTimeString().substring(0, 5)
     }
   ]);
@@ -45,7 +45,7 @@ export default function SupportChat({ isOpen, setIsOpen }: SupportChatProps) {
 
     // Simulate direct support responder
     setTimeout(() => {
-      let replyText = "شكرًا لتواصلك معنا! سنقوم بمراجعة استفسارك والرد عليك في أقرب وقت. فريق دعم زفافي دائمًا في خدمتك.";
+      let replyText = "شكرًا لتواصلك معنا! سنقوم بمراجعة استفسارك والرد عليك في أقرب وقت. فريق دعم دعوات دائمًا في خدمتك.";
 
       const queryLower = currentQuery.toLowerCase();
       if (queryLower.includes("موسيقى") || queryLower.includes("أغنية") || queryLower.includes("صوت") || queryLower.includes("صوتية")) {
@@ -92,7 +92,7 @@ export default function SupportChat({ isOpen, setIsOpen }: SupportChatProps) {
 
             <div className="flex items-center gap-2">
               <div>
-                <h4 className="text-sm font-bold">دعم زفافي الفني المباشر</h4>
+                <h4 className="text-sm font-bold">الدعم الفني المباشر لمنصة دعوات</h4>
                 <p className="text-[10px] text-amber-100 flex items-center gap-1 justify-end">
                   <span>نشط الآن للرد على استفساراتكم</span>
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping inline-block" />

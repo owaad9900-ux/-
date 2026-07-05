@@ -37,6 +37,8 @@ import { DEFAULT_TEMPLATES, SUBSCRIPTION_PLANS } from "./data/templates";
 import { motion, AnimatePresence } from "motion/react";
 
 // Import modular sub-components
+// @ts-ignore
+import logoImg from "./assets/images/website_logo_1783259755084.jpg";
 import InvitationCard from "./components/InvitationCard";
 import AIGenerator from "./components/AIGenerator";
 import Dashboard from "./components/Dashboard";
@@ -532,12 +534,15 @@ export default function App() {
         
         {/* Brand Logo Group */}
         <div className="flex flex-row-reverse items-center gap-3">
-          <div className="w-10 h-10 bg-[#c88b8b] rounded-full flex items-center justify-center text-white text-xl font-serif italic shadow-[0_4px_10px_rgba(200,139,139,0.25)]">
-            Z
-          </div>
+          <img
+            src={logoImg}
+            alt="دعوات"
+            className="w-11 h-11 rounded-xl border border-[#e6b0aa]/30 object-cover shadow-[0_4px_10px_rgba(200,139,139,0.15)] bg-white"
+            referrerPolicy="no-referrer"
+          />
           <div className="text-right">
-            <span className="text-2xl font-serif tracking-tighter font-bold text-[#4a3e3d]">زفافي <span className="text-[#c88b8b]">AI</span></span>
-            <p className="text-[10px] text-[#3a2a29]/60 font-serif italic -mt-1">تحفة فنية رقمية لمناسبتك</p>
+            <span className="text-2xl font-serif tracking-tighter font-bold text-[#4a3e3d]">دعوات <span className="text-[#c88b8b]">AI</span></span>
+            <p className="text-[10px] text-[#3a2a29]/60 font-serif italic -mt-1">منصة بطاقات الدعوة الرقمية الفاخرة</p>
           </div>
         </div>
 
@@ -1211,7 +1216,7 @@ export default function App() {
 
                   <div className="text-center pt-2">
                     <p className="text-[10px] text-[#3a2a29]/60 font-serif italic">
-                      زفافي AI • جميع الحقوق محفوظة لتصميم رقمي ملكي فاخر
+                      دعوات AI • جميع الحقوق محفوظة لتصميم رقمي ملكي فاخر
                     </p>
                   </div>
                 </motion.div>
