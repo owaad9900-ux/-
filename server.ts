@@ -216,7 +216,9 @@ async function startServer() {
   app.post("/api/register", async (req, res) => {
     try {
       const { email, password, name } = req.body;
+      console.log("Registration attempt: ", { email, name });
       if (!email || !password || !name) {
+        console.warn("Registration missing fields:", { email, name, hasPassword: !!password });
         return res.status(400).json({ error: "جميع الحقول مطلوبة" });
       }
 
@@ -225,6 +227,7 @@ async function startServer() {
       const userDoc = await getDoc(userDocRef);
 
       if (userDoc.exists()) {
+        console.warn("Registration error: Email already registered:", emailKey);
         return res.status(400).json({ error: "البريد الإلكتروني مسجل بالفعل!" });
       }
 
@@ -238,6 +241,7 @@ async function startServer() {
         createdAt: new Date().toISOString()
       };
       await setDoc(userDocRef, newUser);
+      console.log("Registration: User document written successfully");
 
       // Create a default custom invitation for this user
       const inviteId = `invite_${emailKey.replace(/[^a-zA-Z0-9]/g, "_")}`;
@@ -272,6 +276,7 @@ async function startServer() {
         viewsCount: 138,
         ownerEmail: emailKey
       });
+      console.log("Registration: Default invitation document written successfully with ID:", inviteId);
 
       return res.json({
         success: true,
@@ -284,7 +289,7 @@ async function startServer() {
       });
     } catch (error: any) {
       console.error("Registration Error:", error);
-      return res.status(500).json({ error: "حدث خطأ أثناء إنشاء الحساب" });
+      return res.status(500).json({ error: "حدث خطأ أثناء إنشاء الحساب: " + (error.message || String(error)) });
     }
   });
 
@@ -292,6 +297,7 @@ async function startServer() {
   app.post("/api/login", async (req, res) => {
     try {
       const { email, password } = req.body;
+      console.log("Login attempt:", { email });
       if (!email || !password) {
         return res.status(400).json({ error: "يرجى إدخال البريد الإلكتروني وكلمة المرور" });
       }
@@ -301,15 +307,18 @@ async function startServer() {
       const userDoc = await getDoc(userDocRef);
 
       if (!userDoc.exists()) {
+        console.warn("Login warning: User not found:", emailKey);
         return res.status(400).json({ error: "الحساب غير موجود!" });
       }
 
       const userData = userDoc.data();
       if (userData.password !== password) {
+        console.warn("Login warning: Incorrect password for:", emailKey);
         return res.status(400).json({ error: "كلمة المرور غير صحيحة!" });
       }
 
       const inviteId = `invite_${emailKey.replace(/[^a-zA-Z0-9]/g, "_")}`;
+      console.log("Login success for user:", emailKey);
 
       return res.json({
         success: true,
@@ -323,7 +332,7 @@ async function startServer() {
       });
     } catch (error: any) {
       console.error("Login Error:", error);
-      return res.status(500).json({ error: "حدث خطأ أثناء تسجيل الدخول" });
+      return res.status(500).json({ error: "حدث خطأ أثناء تسجيل الدخول: " + (error.message || String(error)) });
     }
   });
 
