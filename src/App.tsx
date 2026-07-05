@@ -767,7 +767,12 @@ export default function App() {
                             initial={{ opacity: 0, y: 12 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.35, delay: indexOnPage * 0.05, ease: "easeOut" }}
-                            className={`border rounded-xl p-4 text-right flex flex-col justify-between transition-all relative overflow-hidden group hover:shadow-md ${
+                            whileHover={{ 
+                              scale: 1.03, 
+                              y: -4,
+                              boxShadow: "0 12px 24px -10px rgba(200, 139, 139, 0.4), 0 0 12px 2px rgba(200, 139, 139, 0.15)",
+                            }}
+                            className={`border rounded-xl p-4 text-right flex flex-col justify-between relative overflow-hidden group ${
                               isCurrent 
                                 ? "border-[#c88b8b] bg-[#faf3f0] shadow-sm ring-1 ring-[#c88b8b]" 
                                 : "border-[#e6b0aa]/40 bg-white hover:border-[#4a3e3d]"
